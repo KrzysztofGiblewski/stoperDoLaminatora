@@ -2,15 +2,7 @@
 #include <Wire.h>
 unsigned long poczatekMilisekund = 0;
 unsigned long koniecMilisekund = 0;
-
 int ekrany = 0;
-//int wartoscImpulsu = 0;
-//int wartoscZblizImp = 0;
-//int popWartoscImpu  = 0;
-//int sygnal = 1; // wyprzedzenie przed iloma workami ma piszcec
-//int dlugoscSygnal = 0; //zabezpieczenie przed zatrzymaniem na piszczacym worku
-//int wyjdzZMenu = 0;
-//int ekranyUstawien = 0; //czy rozszerzone menu czy krutkie
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // Ustawienie adresu ukladu na 0x27         A4 SDA        A5 SCL
 
 void setup() {
@@ -29,12 +21,8 @@ void setup() {
 }
 
 void loop() {
-
-  // wartoscImpulsu = analogRead(A6); //zczytuje impuls z licznika maszyny A6
-  //wartoscZblizImp = analogRead(A7); //zczytuje impuls z modulu zblizeniowego A7
-
   wyswietl();
-  buzerr();
+//  buzerr();
 }
 void wyswietl() {
   poczatekMilisekund = millis();
@@ -52,6 +40,7 @@ void wyswietl() {
       }
     case 1:              {
         if (digitalRead(A0) == LOW)   {
+          
         }
         if (digitalRead(A1) == LOW)   {
         }
