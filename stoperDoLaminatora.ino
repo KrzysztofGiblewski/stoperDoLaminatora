@@ -1,16 +1,16 @@
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 unsigned long poczatekMilisekund = 0;
-unsigned long konieckMilisekund = 0;
+unsigned long koniecMilisekund = 0;
 
 int ekrany = 0;
-int wartoscImpulsu = 0;
-int wartoscZblizImp = 0;
-int popWartoscImpu  = 0;
-int sygnal = 1; // wyprzedzenie przed iloma workami ma piszcec
-int dlugoscSygnal = 0; //zabezpieczenie przed zatrzymaniem na piszczacym worku
-int wyjdzZMenu = 0;
-int ekranyUstawien = 0; //czy rozszerzone menu czy krutkie
+//int wartoscImpulsu = 0;
+//int wartoscZblizImp = 0;
+//int popWartoscImpu  = 0;
+//int sygnal = 1; // wyprzedzenie przed iloma workami ma piszcec
+//int dlugoscSygnal = 0; //zabezpieczenie przed zatrzymaniem na piszczacym worku
+//int wyjdzZMenu = 0;
+//int ekranyUstawien = 0; //czy rozszerzone menu czy krutkie
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // Ustawienie adresu ukladu na 0x27         A4 SDA        A5 SCL
 
 void setup() {
@@ -25,7 +25,7 @@ void setup() {
   //modul na pinie A4 SDA  dla I2C
   //    i A5 SCL dla I2C
   //  wartoscImpulsu = analogRead(A6); // pin A6 czyta wartosc napiecia inpulsu
-  wartoscZblizImp = analogRead(A7); //pin A7 z modulu zblizeniowego
+//  wartoscZblizImp = analogRead(A7); //pin A7 z modulu zblizeniowego
 }
 
 void loop() {
@@ -38,12 +38,13 @@ void loop() {
 }
 void wyswietl() {
   poczatekMilisekund = millis();
-  pierwszaLinia();
+  pierwszaLinia(millis());
   switch (ekrany)
   {
     case 0:             {
         if (digitalRead(A0) == LOW)   {
-          drugaLinia("poczatek ", poczatekMilisekund, " koniec ", konieckMilisekund);
+          koniecMilisekund=millis()-poczatekMilisekund;
+          drugaLinia("poczatek ", poczatekMilisekund, " koniec ", koniecMilisekund);
         }
         if (digitalRead(A1) == LOW)   {
         }
@@ -62,16 +63,14 @@ void wyswietl() {
 
 }
 void zmienEkrany() {
-  delay(50);
   ekrany++;
-  lcd.begin(16, 2);
-  if (ekranyUstawien == 1)
-    if (ekrany > 3)
-      ekrany = 0;
-}
-void pierwszaLinia() {
+  delay(100);
+  if (ekrany>3)
+  ekrany=0;
+ }
+void pierwszaLinia(unsigned long milisekundy) {
   lcd.setCursor(0, 0);
-  lcd.print(" tekst  ");
+  lcd.print(milisekundy);
 }
 void drugaLinia(String raz, unsigned long dwa, String trzy, unsigned long cztery) {
   lcd.setCursor(0, 1);
