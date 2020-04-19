@@ -1,10 +1,12 @@
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
+unsigned long poczatekMilisekund = 0;
+unsigned long konieckMilisekund = 0;
+
 int ekrany = 0;
 int wartoscImpulsu = 0;
 int wartoscZblizImp = 0;
 int popWartoscImpu  = 0;
-int opuznij = 10; //przerwa miedzy cyklami
 int sygnal = 1; // wyprzedzenie przed iloma workami ma piszcec
 int dlugoscSygnal = 0; //zabezpieczenie przed zatrzymaniem na piszczacym worku
 int wyjdzZMenu = 0;
@@ -15,10 +17,10 @@ void setup() {
   lcd.begin(16, 2);
   Serial.begin(9600);
   lcd.print("0");
-  pinMode(A0, INPUT_PULLUP);                //przycisk dodawania sztuki A0
-  pinMode(A1, INPUT_PULLUP);                // przycisk odejmowania A1
-  pinMode(A2, INPUT_PULLUP);                //przycisk wyboru A2
-  
+  pinMode(A0, INPUT_PULLUP);                //przycisk dodawania sztuki A0    -   lewy
+  pinMode(A1, INPUT_PULLUP);                // przycisk odejmowania A1      - środkowy
+  pinMode(A2, INPUT_PULLUP);                //przycisk wyboru A2            -prawy
+
   pinMode(A3, OUTPUT); //Konfiguracja A3 jako wyjście dla buzzera
   //modul na pinie A4 SDA  dla I2C
   //    i A5 SCL dla I2C
@@ -29,17 +31,19 @@ void setup() {
 void loop() {
 
   // wartoscImpulsu = analogRead(A6); //zczytuje impuls z licznika maszyny A6
-  wartoscZblizImp = analogRead(A7); //zczytuje impuls z modulu zblizeniowego A7
+  //wartoscZblizImp = analogRead(A7); //zczytuje impuls z modulu zblizeniowego A7
 
   wyswietl();
   buzerr();
 }
 void wyswietl() {
+  poczatekMilisekund = millis();
   pierwszaLinia();
   switch (ekrany)
   {
     case 0:             {
         if (digitalRead(A0) == LOW)   {
+          drugaLinia("poczatek ", poczatekMilisekund, " koniec ", konieckMilisekund);
         }
         if (digitalRead(A1) == LOW)   {
         }
@@ -64,12 +68,12 @@ void zmienEkrany() {
   if (ekranyUstawien == 1)
     if (ekrany > 3)
       ekrany = 0;
- }
+}
 void pierwszaLinia() {
   lcd.setCursor(0, 0);
   lcd.print(" tekst  ");
 }
-void drugaLinia(String raz, long dwa, String trzy, long cztery) {
+void drugaLinia(String raz, unsigned long dwa, String trzy, unsigned long cztery) {
   lcd.setCursor(0, 1);
   lcd.print(raz);
   lcd.print(dwa);
@@ -78,8 +82,8 @@ void drugaLinia(String raz, long dwa, String trzy, long cztery) {
 
 }
 void buzerr() {
-//      digitalWrite(A3, HIGH);
-//      digitalWrite(A3, LOW);
-  
+  //      digitalWrite(A3, HIGH);
+  //      digitalWrite(A3, LOW);
+
 
 }
