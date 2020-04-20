@@ -3,21 +3,21 @@
 unsigned long poczatekMilisekund = 0;
 unsigned long koniecMilisekund = 0;
 int ekrany = 0;
-LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // Ustawienie adresu ukladu na 0x27         A4 SDA        A5 SCL
-
+//LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // Ustawienie adresu ukladu na 0x27         A4 SDA        A5 SCL
+LiquidCrystal_I2C lcd(0x27,20,4);
 void setup() {
-  lcd.begin(16, 2);
-  Serial.begin(9600);
-  lcd.print("0");
+   lcd.init();                      // initialize the lcd 
+  lcd.init();
+   lcd.backlight();
+  lcd.setCursor(3,0);
+   Serial.begin(9600);
   pinMode(A0, INPUT_PULLUP);                //przycisk dodawania sztuki A0    -   lewy
   pinMode(A1, INPUT_PULLUP);                // przycisk odejmowania A1      - środkowy
   pinMode(A2, INPUT_PULLUP);                //przycisk wyboru A2            -prawy
-
   pinMode(A3, OUTPUT); //Konfiguracja A3 jako wyjście dla buzzera
-  //modul na pinie A4 SDA  dla I2C
-  //    i A5 SCL dla I2C
-  //  wartoscImpulsu = analogRead(A6); // pin A6 czyta wartosc napiecia inpulsu
-//  wartoscZblizImp = analogRead(A7); //pin A7 z modulu zblizeniowego
+  
+  pinMode(A6, OUTPUT);       //przekaznik1 jako wyjście
+
 }
 
 void loop() {
@@ -32,9 +32,10 @@ void wyswietl() {
     case 0:             {
         if (digitalRead(A0) == LOW)   {
           koniecMilisekund=millis()-poczatekMilisekund;
-          drugaLinia("poczatek ", poczatekMilisekund, " koniec ", koniecMilisekund);
+          drugaLinia("po ", poczatekMilisekund, " ko ", koniecMilisekund);
         }
         if (digitalRead(A1) == LOW)   {
+        drugaLinia("po ", poczatekMilisekund, " ko ", koniecMilisekund);
         }
         break;
       }
