@@ -3,6 +3,10 @@
 
 unsigned long poczatekMilisekund = 0;
 unsigned long koniecMilisekund = 0;
+
+unsigned long poczatekOdliczania = 0;
+unsigned long koniecOdliczania = 0;
+
 int ekrany = 0;
 boolean mierzCzas = false;
 boolean zmierzone = false;
@@ -10,14 +14,15 @@ boolean zmierzone = false;
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 void setup() {
-  lcd.init();                      // initialize the lcd
-  lcd.init();
+  //  lcd.init();                      // initialize the lcd
+  //  lcd.init();
   lcd.backlight();
   lcd.setCursor(3, 0);
   Serial.begin(9600);
   pinMode(A0, INPUT_PULLUP);                //przycisk dodawania sztuki A0    -   lewy
   pinMode(A1, INPUT_PULLUP);                // przycisk odejmowania A1      - środkowy
   pinMode(A2, INPUT_PULLUP);                //przycisk wyboru A2            -prawy
+
   // pinMode(A3, OUTPUT); //Konfiguracja A3 jako wyjście dla buzzera
 
   pinMode(A6, OUTPUT);       //przekaznik1 jako wyjście
@@ -27,10 +32,10 @@ void setup() {
 void loop() {
   wyswietl();
   //  buzerr();
+  if (digitalRead(A2) == LOW)     // jak klikniety przycisk zmiany ekranu to zmiana ekranu w metodzie switch(ekrany)
+    ekrany++;
 }
 void wyswietl() {
-  // poczatekMilisekund = millis();
-  pierwszaLinia(millis());
   switch (ekrany)
   {
     case 0:             {
@@ -38,22 +43,34 @@ void wyswietl() {
           mierzCzas = true;
           zmierzone = false;
           poczatekMilisekund = millis();
+          pierwszaLinia(millis());
           drugaLinia("Start ", 0, "  STOP  ", 0);
         }
         if (digitalRead(A1) == LOW)   {
           mierzCzas = false;
           zmierzone = true;
           koniecMilisekund = millis() - poczatekMilisekund;
-          drugaLinia("Stop              ",  koniecMilisekund / 1000, ",", koniecMilisekund % 1000);
+          pierwszaLinia(millis());
+          drugaLinia("Stop                                     ",  koniecMilisekund / 1000, ",", koniecMilisekund % 1000);
           drugaLinia("S ",  koniecMilisekund / 1000, ",", koniecMilisekund % 1000);
         }
         break;
       }
     case 1:              {
+        pierwszaLinia("odliczanie 15,5 sekundy");
+
         if (digitalRead(A0) == LOW)   {
+          poczatekOdliczania = millis();
+          koniecOdliczania = poczatekOdliczania + 15500; //15,5sekundy to 15500 milisekund
+
 
         }
         if (digitalRead(A1) == LOW)   {
+          drugaLinia("Stop",koniecOdliczania," wyznaczony",0);
+        }
+        drugaLinia("Start Odliczania" , poczatekOdliczania, " GO", koniecOdliczania);
+        if (poczatekOdliczania <= koniecOdliczania) {
+          drugaLinia("Koniec odliczania", koniecOdliczania,"czas minoł",0);
         }
         break;
       }
