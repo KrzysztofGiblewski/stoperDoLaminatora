@@ -44,8 +44,8 @@ void wyswietl() {
           mierzCzas = false;
           zmierzone = true;
           koniecMilisekund = millis() - poczatekMilisekund;
-          drugaLinia("Stop              ",  koniecMilisekund / 1000, ",", koniecMilisekund % 1000);
-          drugaLinia("S ",  koniecMilisekund / 1000, ",", koniecMilisekund % 1000);
+          drugaLinia("Stop              ",  koniecMilisekund / 1000UL, ",", koniecMilisekund % 1000UL);
+          drugaLinia("S ",  koniecMilisekund / 1000UL, ",", koniecMilisekund % 1000UL);
         }
         break;
       }
