@@ -34,9 +34,11 @@ void loop() {
   wyswietl();
 
   if (odliczajCzas == true) {
-    if ( koniecOdliczania<=millis()) {
+    drugaLinia("CZAS MIJA   ", koniecOdliczania - millis());
+    if ( koniecOdliczania <= millis()) {
+      odliczajCzas = false;
       pierwszaLinia("koniec odliczania");
-      drugaLinia("KONIEC  odliczania   ", koniecMilisekund);
+      drugaLinia("KONIEC  odliczania   ", koniecOdliczania - millis());
     } if (odliczajCzas != true) {
       pierwszaLinia("Nie odliczam");
       drugaLinia("wciśnij przycisk ", 0);
@@ -47,16 +49,17 @@ void loop() {
 void wyswietl() {
 
   if (digitalRead(A0) == LOW)   {
+    delay(50);
     odliczajCzas = true;
     poczatekOdliczania = millis();
     koniecOdliczania = poczatekOdliczania + 5500UL; //5,5sekundy to 5500 milisekund
     pierwszaLinia("start odliczania   ");
-    drugaLinia("Start Odl " , poczatekOdliczania);
+    drugaLinia("Start Odl " , koniecOdliczania - millis());
   }
   if (digitalRead(A1) == LOW)   {
     odliczajCzas = false;
     pierwszaLinia("Czas minoł          ");
-    drugaLinia("Stop odliczania ", koniecOdliczania);
+    drugaLinia("Stop odliczania ", koniecOdliczania - millis());
     poczatekOdliczania = koniecOdliczania;
   }
 }
