@@ -14,7 +14,7 @@ boolean odliczajCzas = false;
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 void setup() {
-  lcd.init();                      // initialize the lcd
+  //lcd.init();                      // initialize the lcd
   lcd.backlight();
   lcd.setCursor(3, 0);
   Serial.begin(9600);
@@ -32,18 +32,7 @@ void loop() {
 
   //  buzerr();
   wyswietl();
-
-  if (odliczajCzas == true) {
-    drugaLinia("CZAS MIJA   ", koniecOdliczania - millis());
-    if ( koniecOdliczania <= millis()) {
-      odliczajCzas = false;
-      pierwszaLinia("koniec odliczania");
-      drugaLinia("KONIEC  odliczania   ", koniecOdliczania - millis());
-    } if (odliczajCzas != true) {
-      pierwszaLinia("Nie odliczam");
-      drugaLinia("wciśnij przycisk ", 0);
-    }
-  }
+sprawdz();
 }
 
 void wyswietl() {
@@ -63,7 +52,20 @@ void wyswietl() {
     poczatekOdliczania = koniecOdliczania;
   }
 }
-
+void sprawdz(){
+  
+  if (odliczajCzas == true) {
+    drugaLinia("CZAS MIJA   ", koniecOdliczania - millis());
+    if ( koniecOdliczania <= millis()) {
+      odliczajCzas = false;
+      pierwszaLinia("koniec odliczania");
+      drugaLinia("KONIEC  odliczania   ", koniecOdliczania - millis());
+    } if (odliczajCzas != true) {
+      pierwszaLinia("Nie odliczam");
+      drugaLinia("wciśnij przycisk ", 0);
+    }
+  }
+}
 void pierwszaLinia(unsigned long milisekundy) {
   lcd.setCursor(0, 0);
   lcd.print(milisekundy);
