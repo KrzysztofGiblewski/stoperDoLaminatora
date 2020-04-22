@@ -7,9 +7,9 @@ unsigned long koniecMilisekund = 0;
 unsigned long poczatekOdliczania = 0;
 unsigned long koniecOdliczania = 0;
 
-int ekrany = 0;
+int ekrany = 1;
 boolean mierzCzas = false;
-boolean zmierzone = false;
+boolean odliczajCzas = false;
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
@@ -31,56 +31,41 @@ void setup() {
 void loop() {
 
   //  buzerr();
-  if (digitalRead(A2) == LOW)     // jak klikniety przycisk zmiany ekranu to zmiana ekranu w metodzie switch(ekrany)
-    zmienEkrany();
   wyswietl();
-}
-void wyswietl() {
-  switch (ekrany)
-  {
-    case 0:             {
-        if (digitalRead(A0) == LOW)   {
-          poczatekMilisekund = millis();
-          pierwszaLinia(millis());
-          drugaLinia("Start ", 0, "  STOP  ", 0);
-          Serial.println(millis());
 
-        }
-        if (digitalRead(A1) == LOW)   {
-          koniecMilisekund = millis() - poczatekMilisekund;
-          pierwszaLinia(millis());
-          drugaLinia("S ",  koniecMilisekund / 1000UL, ",", koniecMilisekund % 1000UL);
-        }
-        break;
-      }
-    case 1:
-      {
-        if (digitalRead(A0) == LOW)   {
-          poczatekOdliczania = millis();
-          koniecOdliczania = poczatekOdliczania + 5500UL; //5,5sekundy to 5500 milisekund
-          drugaLinia("Start Odliczania" , poczatekOdliczania);
-        }
-        if (digitalRead(A1) == LOW)   {
-          drugaLinia("Stop odliczania ", koniecOdliczania);
-          poczatekOdliczania = koniecOdliczania;
-        }
-         if (koniecOdliczania <= poczatekOdliczania) {
-          drugaLinia("Zakończone odliczanie ", koniecMilisekund);
-        }
-        break;
-      }
+  if (odliczajCzas == true) {
+    if ( koniecOdliczania<=millis()) {
+      pierwszaLinia("koniec odliczania");
+      drugaLinia("Zakończone odliczanie ", koniecMilisekund);
+    } if (odliczajCzas != true) {
+      pierwszaLinia("Nie odliczam");
+      drugaLinia("wciśnij przycisk ", 0);
+    }
   }
 }
 
-void zmienEkrany() {
-  ekrany++;
-  delay(500);
-  if (ekrany > 1)
-    ekrany = 0;
+void wyswietl() {
+
+  if (digitalRead(A0) == LOW)   {
+    odliczajCzas = true;
+    poczatekOdliczania = millis();
+    koniecOdliczania = poczatekOdliczania + 5500UL; //5,5sekundy to 5500 milisekund
+    drugaLinia("Start Odl " , poczatekOdliczania);
+  }
+  if (digitalRead(A1) == LOW)   {
+    odliczajCzas = false;
+    drugaLinia("Stop odliczania ", koniecOdliczania);
+    poczatekOdliczania = koniecOdliczania;
+  }
 }
+
 void pierwszaLinia(unsigned long milisekundy) {
   lcd.setCursor(0, 0);
   lcd.print(milisekundy);
+}
+void pierwszaLinia(String tekst) {
+  lcd.setCursor(0, 0);
+  lcd.print(tekst);
 }
 void drugaLinia(String raz, unsigned long dwa, String trzy, unsigned long cztery) {
   lcd.setCursor(0, 1);
