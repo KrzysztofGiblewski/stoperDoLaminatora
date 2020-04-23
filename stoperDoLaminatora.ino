@@ -42,13 +42,12 @@ void loop() {
 }
 
 void wyswietl() {
-  pierwszaLinia(tekst);
-  drugaLinia(tekst2, koniecOdliczania - millis());
+ pierwszaLinia(tekst);
+ drugaLinia(tekst2, koniecOdliczania - millis());
 }
 void sprawdz() {
   if (odliczajCzas == true) {
     tekst2 = "Odliczam    ";
-    drugaLinia(tekst2, koniecOdliczania - millis());
     if ( koniecOdliczania <= millis()) {
       odliczajCzas = false;
       zatrzymaj();
