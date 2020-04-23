@@ -10,7 +10,7 @@ unsigned long koniecOdliczania = 0;
 int ekrany = 1;
 boolean mierzCzas = false;
 boolean odliczajCzas = false;
-String tekst, tekst2="Czekam                    ";
+String tekst, tekst2 = "Czekam                    ";
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
@@ -32,23 +32,22 @@ void setup() {
 void loop() {
 
   //  buzerr();
- 
+
   sprawdz();
   if (digitalRead(A0) == LOW)
     startuj();
-  if (digitalRead(A1) == LOW) 
-  zatrzymaj(); 
-   wyswietl(); 
+  if (digitalRead(A1) == LOW)
+    zatrzymaj();
+  wyswietl();
 }
 
 void wyswietl() {
   pierwszaLinia(tekst);
-     drugaLinia(tekst2, koniecOdliczania - millis());
- }
+  drugaLinia(tekst2, koniecOdliczania - millis());
+}
 void sprawdz() {
-
   if (odliczajCzas == true) {
-    tekst2="Odliczam    ";
+    tekst2 = "Odliczam    ";
     drugaLinia(tekst2, koniecOdliczania - millis());
     if ( koniecOdliczania <= millis()) {
       odliczajCzas = false;
@@ -62,18 +61,18 @@ void sprawdz() {
 void startuj() {
 
   delay(50);
-  tekst="ODLICZANIE TRWA           ";
-  tekst2="Czas mija";
+  tekst = "ODLICZANIE TRWA           ";
+  tekst2 = "Czas mija";
   odliczajCzas = true;
   poczatekOdliczania = millis();
   koniecOdliczania = poczatekOdliczania + 5500UL; //5,5sekundy to 5500 milisekund
 
 }
-void zatrzymaj(){
-  tekst="Zatrzymane               ";
-  tekst2="Odliczanie STOP ";
-odliczajCzas = false;
- poczatekOdliczania = koniecOdliczania;
+void zatrzymaj() {
+  tekst = "Zatrzymane               ";
+  tekst2 = "Odliczanie STOP ";
+  odliczajCzas = false;
+  poczatekOdliczania = koniecOdliczania;
 }
 void pierwszaLinia(unsigned long milisekundy) {
   lcd.setCursor(0, 0);
