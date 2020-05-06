@@ -25,8 +25,11 @@ void setup() {
 
   // pinMode(A3, OUTPUT); //Konfiguracja A3 jako wyjście dla buzzera
 
-  pinMode(A6, OUTPUT);       //przekaznik1 jako wyjście
-
+   pinMode(7, OUTPUT);       //przekaznik1 jako wyjście D7
+  // digitalWrite(7, LOW);
+  // delay(1000);
+   digitalWrite(7, HIGH); //wyłączony przekaźnik
+  // delay(1000);
 }
 
 void loop() {
@@ -42,63 +45,68 @@ void loop() {
 }
 
 void wyswietl() {
- pierwszaLinia(tekst);
- drugaLinia(tekst2, koniecOdliczania - millis());
+  pierwszaLinia(tekst);
+  drugaLinia(tekst2, koniecOdliczania - millis());
 }
+
 void sprawdz() {
   if (odliczajCzas == true) {
     tekst2 = "Odliczam    ";
+
     if ( koniecOdliczania <= millis()) {
       odliczajCzas = false;
       zatrzymaj();
     } if (odliczajCzas != true) {
       pierwszaLinia("Nie odliczam");
       drugaLinia("wciśnij przycisk ", 0);
+      
     }
   }
 }
-void startuj() {
 
+void startuj() {
   delay(50);
+  digitalWrite(7, LOW);  // włączanie przekaźnika
   tekst = "ODLICZANIE TRWA           ";
   tekst2 = "Czas mija";
   odliczajCzas = true;
   poczatekOdliczania = millis();
   koniecOdliczania = poczatekOdliczania + 5500UL; //5,5sekundy to 5500 milisekund
-
 }
+
 void zatrzymaj() {
   tekst = "Zatrzymane               ";
   tekst2 = "Odliczanie STOP ";
   odliczajCzas = false;
   poczatekOdliczania = koniecOdliczania;
+  digitalWrite(7, HIGH); // wyłączam przekażnik
 }
+
 void pierwszaLinia(unsigned long milisekundy) {
   lcd.setCursor(0, 0);
   lcd.print(milisekundy);
 }
+
 void pierwszaLinia(String tekst) {
   lcd.setCursor(0, 0);
   lcd.print(tekst);
 }
+
 void drugaLinia(String raz, unsigned long dwa, String trzy, unsigned long cztery) {
   lcd.setCursor(0, 1);
   lcd.print(raz);
   lcd.print(dwa);
   lcd.print(trzy);
   lcd.print(cztery);
-
 }
+
 void drugaLinia(String raz, unsigned long dwa) {
   lcd.setCursor(0, 1);
   lcd.print(raz);
   lcd.print(dwa);
-
-
 }
+
 void buzerr() {
   //      digitalWrite(A3, HIGH);
   //      digitalWrite(A3, LOW);
-
-
 }
