@@ -25,11 +25,8 @@ void setup() {
 
   // pinMode(A3, OUTPUT); //Konfiguracja A3 jako wyjście dla buzzera
 
-   pinMode(7, OUTPUT);       //przekaznik1 jako wyjście D7
-  // digitalWrite(7, LOW);
-  // delay(1000);
-   digitalWrite(7, HIGH); //wyłączony przekaźnik
-  // delay(1000);
+  pinMode(7, OUTPUT);       //przekaznik1 jako wyjście D7
+  digitalWrite(7, HIGH); //wyłączony przekaźnik
 }
 
 void loop() {
@@ -44,6 +41,16 @@ void loop() {
   wyswietl();
 }
 
+
+
+void zalacz() {
+  digitalWrite(7, LOW);  // włączanie przekaźnika
+}
+
+void wylacz() {
+  digitalWrite(7, HIGH); // wyłączam przekażnik
+}
+
 void wyswietl() {
   pierwszaLinia(tekst);
   drugaLinia(tekst2, koniecOdliczania - millis());
@@ -56,22 +63,25 @@ void sprawdz() {
     if ( koniecOdliczania <= millis()) {
       odliczajCzas = false;
       zatrzymaj();
+
+
     } if (odliczajCzas != true) {
       pierwszaLinia("Nie odliczam");
       drugaLinia("wciśnij przycisk ", 0);
-      
+
+
     }
   }
 }
 
 void startuj() {
   delay(50);
-  digitalWrite(7, LOW);  // włączanie przekaźnika
   tekst = "ODLICZANIE TRWA           ";
   tekst2 = "Czas mija";
   odliczajCzas = true;
   poczatekOdliczania = millis();
   koniecOdliczania = poczatekOdliczania + 5500UL; //5,5sekundy to 5500 milisekund
+  zalacz();  //przekaźnik
 }
 
 void zatrzymaj() {
@@ -79,7 +89,7 @@ void zatrzymaj() {
   tekst2 = "Odliczanie STOP ";
   odliczajCzas = false;
   poczatekOdliczania = koniecOdliczania;
-  digitalWrite(7, HIGH); // wyłączam przekażnik
+  wylacz();
 }
 
 void pierwszaLinia(unsigned long milisekundy) {
