@@ -12,7 +12,7 @@ unsigned long ileCzasuOdliczam = 5500;
 int ekrany = 0;
 
 boolean odliczajCzas = false; //kontrolka czy liczy czy stoi
-boolean stanPrzycisku=false; //stan czyli fals to stoi a true bedzie w trybie odliczania 
+boolean stanPrzycisku = false; //stan czyli fals to stoi a true bedzie w trybie odliczania
 
 String tekst, tekst2 = "------------------";
 
@@ -35,19 +35,19 @@ void setup() {
 
 void loop() {
 
-  if (odliczajCzas == false && stanPrzycisku==false);
-  if (digitalRead(A2) == LOW) { //prawy skrajny będzie startował
-    delay(300);
-    startuj();
-    stanPrzycisku=true;
-  }
-  if (odliczajCzas == true && stanPrzycisku==true); {
-    sprawdz();
-    if (digitalRead(A2) == LOW) { //prawy skrajny będzie STOP
-      delay(300);
+  if (digitalRead(A2) == LOW) { //prawy skrajny będzie startował i stopował
+    delay(200);
+    if (odliczajCzas == true && stanPrzycisku == true) {
       zatrzymaj();
-      stanPrzycisku=false;
+
+
     }
+
+    if (odliczajCzas == false && stanPrzycisku == false) {
+      startuj();
+
+    }
+    stanPrzycisku = !stanPrzycisku ;
   }
 
   if (digitalRead(A0) == LOW) {
@@ -63,6 +63,9 @@ void loop() {
     tekst = ileCzasuOdliczam;
 
   }
+
+  sprawdz();
+
   wyswietl();
 }
 
@@ -77,21 +80,15 @@ void wylacz() {
 }
 
 void sprawdz() {
-  if ( koniecOdliczania <= millis()) {
-    odliczajCzas = false;
+  if ( koniecOdliczania <= millis())
     zatrzymaj(); // przekaźnik
-  }
-  if (odliczajCzas != true) {
-    //pierwszaLinia("Nie odliczam");
-  //  drugaLinia("wciśnij przycisk ", 0);
-
-  }
 }
 
 void startuj() {
   odliczajCzas = true;
+
   tekst = "ODLICZANIE TRWA           ";
-  tekst2 = "Czas mija";
+  tekst2 = "Czas mija  ";
   poczatekOdliczania = millis();
   koniecOdliczania = poczatekOdliczania + ileCzasuOdliczam;
   zalacz();  //przekaźnik
@@ -99,8 +96,9 @@ void startuj() {
 
 void zatrzymaj() {
   odliczajCzas = false;
-  tekst = ileCzasuOdliczam;
-  tekst2 = "Odliczanie STOP ";
+
+  tekst = "odliczanie koniec        ";
+  tekst2 = "Odliczanie STOP   ";
   poczatekOdliczania = koniecOdliczania;
   wylacz();
 }
