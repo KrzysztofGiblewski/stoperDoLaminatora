@@ -7,10 +7,14 @@ unsigned long koniecMilisekund = 0;
 unsigned long poczatekOdliczania = 0;
 unsigned long koniecOdliczania = 0;
 
-int ekrany = 1;
-boolean mierzCzas = false;
-boolean odliczajCzas = false;
-String tekst, tekst2 = "Czekam                    ";
+unsigned long ileCzasuOdliczam = 5500;
+
+int ekrany = 0;
+
+boolean odliczajCzas = false; //kontrolka czy liczy czy stoi
+boolean stanPrzycisku=false; //stan czyli fals to stoi a true bedzie w trybie odliczania 
+
+String tekst, tekst2 = "------------------";
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
@@ -21,7 +25,7 @@ void setup() {
   Serial.begin(9600);
   pinMode(A0, INPUT_PULLUP);                //przycisk dodawania sztuki A0    -   lewy
   pinMode(A1, INPUT_PULLUP);                // przycisk odejmowania A1      - środkowy
-  pinMode(A2, INPUT_PULLUP);                //przycisk wyboru ekranu A2            -prawy
+  pinMode(A2, INPUT_PULLUP);                //przycisk START STOP A2            -prawy
 
   // pinMode(A3, OUTPUT); //Konfiguracja A3 jako wyjście dla buzzera
 
@@ -31,24 +35,74 @@ void setup() {
 
 void loop() {
 
-  //  buzerr();
-
-  sprawdz();
-  if (digitalRead(A0) == LOW)
+  if (odliczajCzas == false && stanPrzycisku==false);
+  if (digitalRead(A2) == LOW) { //prawy skrajny będzie startował
+    delay(300);
     startuj();
-  if (digitalRead(A1) == LOW)
-    zatrzymaj();
+    stanPrzycisku=true;
+  }
+  if (odliczajCzas == true && stanPrzycisku==true); {
+    sprawdz();
+    if (digitalRead(A2) == LOW) { //prawy skrajny będzie STOP
+      delay(300);
+      zatrzymaj();
+      stanPrzycisku=false;
+    }
+  }
+
+  if (digitalRead(A0) == LOW) {
+    delay(200);
+    ileCzasuOdliczam = ileCzasuOdliczam + 100;
+    tekst = ileCzasuOdliczam;
+
+  }
+
+  if (digitalRead(A1) == LOW) {
+    delay(200);
+    ileCzasuOdliczam = ileCzasuOdliczam - 100;
+    tekst = ileCzasuOdliczam;
+
+  }
   wyswietl();
 }
 
 
-
+// obsługa przekaźnika WŁĄCZANIE
 void zalacz() {
   digitalWrite(7, LOW);  // włączanie przekaźnika
 }
-
+//obsługa przekaźnika WYŁĄCZANIE
 void wylacz() {
   digitalWrite(7, HIGH); // wyłączam przekażnik
+}
+
+void sprawdz() {
+  if ( koniecOdliczania <= millis()) {
+    odliczajCzas = false;
+    zatrzymaj(); // przekaźnik
+  }
+  if (odliczajCzas != true) {
+    //pierwszaLinia("Nie odliczam");
+  //  drugaLinia("wciśnij przycisk ", 0);
+
+  }
+}
+
+void startuj() {
+  odliczajCzas = true;
+  tekst = "ODLICZANIE TRWA           ";
+  tekst2 = "Czas mija";
+  poczatekOdliczania = millis();
+  koniecOdliczania = poczatekOdliczania + ileCzasuOdliczam;
+  zalacz();  //przekaźnik
+}
+
+void zatrzymaj() {
+  odliczajCzas = false;
+  tekst = ileCzasuOdliczam;
+  tekst2 = "Odliczanie STOP ";
+  poczatekOdliczania = koniecOdliczania;
+  wylacz();
 }
 
 void wyswietl() {
@@ -56,46 +110,7 @@ void wyswietl() {
   drugaLinia(tekst2, koniecOdliczania - millis());
 }
 
-void sprawdz() {
-  if (odliczajCzas == true) {
-    tekst2 = "Odliczam    ";
 
-    if ( koniecOdliczania <= millis()) {
-      odliczajCzas = false;
-      zatrzymaj();
-
-
-    } if (odliczajCzas != true) {
-      pierwszaLinia("Nie odliczam");
-      drugaLinia("wciśnij przycisk ", 0);
-
-
-    }
-  }
-}
-
-void startuj() {
-  delay(50);
-  tekst = "ODLICZANIE TRWA           ";
-  tekst2 = "Czas mija";
-  odliczajCzas = true;
-  poczatekOdliczania = millis();
-  koniecOdliczania = poczatekOdliczania + 5500UL; //5,5sekundy to 5500 milisekund
-  zalacz();  //przekaźnik
-}
-
-void zatrzymaj() {
-  tekst = "Zatrzymane               ";
-  tekst2 = "Odliczanie STOP ";
-  odliczajCzas = false;
-  poczatekOdliczania = koniecOdliczania;
-  wylacz();
-}
-
-void pierwszaLinia(unsigned long milisekundy) {
-  lcd.setCursor(0, 0);
-  lcd.print(milisekundy);
-}
 
 void pierwszaLinia(String tekst) {
   lcd.setCursor(0, 0);
